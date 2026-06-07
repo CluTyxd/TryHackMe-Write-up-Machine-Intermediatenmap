@@ -2,62 +2,53 @@
 
 ## Enumeration
 
-A enumeração inicial foi realizada utilizando o Nmap para identificar portas abertas e possíveis vetores de ataque.
+The initial enumeration was performed using Nmap to identify open ports and potential attack vectors.
 
 ```bash
-nmap <IP> -sS -sC -sV 
+nmap <IP> -sS -sC -sV
 ```
 
-Ao executar o scan, encontramos algumas portas altas abertas na máquina alvo.
+While performing the scan, we discovered several high-numbered ports open on the target machine.
 
-O parâmetro `-sC` executa os scripts padrão do NSE (Nmap Scripting Engine), permitindo coletar informações adicionais sobre os serviços encontrados, como títulos de páginas web, compartilhamentos SMB, certificados SSL e outras informações úteis.
+The `-sC` parameter executes the default NSE (Nmap Scripting Engine) scripts, allowing us to gather additional information about the discovered services, such as web page titles, SMB shares, SSL certificates, and other useful details.
 
-Já o parâmetro `-sV` realiza a detecção de versões dos serviços, identificando exatamente o software que está sendo executado em cada porta aberta.
+The `-sV` parameter performs service version detection, identifying the exact software running on each open port.
 
-Através da enumeração inicial, já foi possível identificar uma anotação contendo possíveis credenciais:
-<br><br>
-<img width="924" height="566" alt="image" src="https://github.com/user-attachments/assets/d3ca1430-bf05-4c62-a4b7-649235fa46fc" />
-<br><br>
+During the initial enumeration, we were able to identify a note containing potential credentials: <br><br> <img width="924" height="566" alt="image" src="https://github.com/user-attachments/assets/d3ca1430-bf05-4c62-a4b7-649235fa46fc" /> <br><br>
+
 ## Web Enumeration
 
-Ao acessarmos a aplicação web disponível na porta `31337`, encontramos as mesmas credenciais expostas na página:
-<br><br>
-<img width="1002" height="291" alt="image" src="https://github.com/user-attachments/assets/f819c7ff-fd19-4a89-af11-67e030d65a11" />
-<br><br>
+When accessing the web application running on port `31337`, we found the same credentials exposed on the page: <br><br> <img width="1002" height="291" alt="image" src="https://github.com/user-attachments/assets/f819c7ff-fd19-4a89-af11-67e030d65a11" /> <br><br>
+
 ## Initial Access
 
-Com as credenciais obtidas durante a enumeração, tentamos autenticação via SSH e conseguimos acesso à máquina com sucesso:
-<br><br>
-<img width="759" height="454" alt="image" src="https://github.com/user-attachments/assets/b15fa2ba-d3a9-48e5-9dbe-d43b80365bb3" />
-<br><br>
+Using the credentials obtained during enumeration, we attempted SSH authentication and successfully gained access to the machine: <br><br> <img width="759" height="454" alt="image" src="https://github.com/user-attachments/assets/b15fa2ba-d3a9-48e5-9dbe-d43b80365bb3" /> <br><br>
+
 ## User Flag
 
-Após obter acesso inicial, retornamos para o diretório `/home` para continuar a enumeração do sistema.
+After obtaining initial access, we returned to the `/home` directory to continue enumerating the system.
 
-Durante a análise, identificamos o usuário `user`. Ao acessar seu diretório, encontramos a flag de usuário:
-<br><br>
-<img width="511" height="192" alt="image" src="https://github.com/user-attachments/assets/8a783a15-f3ff-42b6-9c0d-6c1eb396c1b3" />
-<br><br>
+During the analysis, we identified the user `user`. Upon accessing the user's directory, we found the user flag: <br><br> <img width="511" height="192" alt="image" src="https://github.com/user-attachments/assets/8a783a15-f3ff-42b6-9c0d-6c1eb396c1b3" /> <br><br>
+
 ```text
 flag{25f1309497a18888dde5222761ea88e4}
 ```
 
 ## Conclusion
 
-A máquina demonstrou a importância de uma enumeração cuidadosa. Através de um simples scan de serviços e da análise da aplicação web exposta em uma porta não convencional, foi possível obter credenciais válidas, realizar acesso via SSH e capturar a flag de usuário.
+This machine demonstrated the importance of thorough enumeration. Through a simple service scan and the analysis of a web application exposed on a non-standard port, it was possible to obtain valid credentials, gain SSH access, and capture the user flag.
 
 ## Remediation
 
-Para evitar que esse tipo de comprometimento ocorra em ambientes reais, algumas medidas de segurança devem ser adotadas:
+To prevent this type of compromise in real-world environments, several security measures should be implemented:
 
-* **Não armazenar credenciais em arquivos acessíveis publicamente**, páginas web ou diretórios sem proteção adequada.
-* **Restringir o acesso a serviços expostos em portas não convencionais**, garantindo que apenas usuários autorizados possam acessá-los.
-* **Aplicar o princípio do menor privilégio**, limitando o acesso dos usuários apenas aos recursos necessários para suas funções.
-* **Utilizar senhas fortes e exclusivas**, evitando reutilização de credenciais entre diferentes serviços.
-* **Implementar autenticação multifator (MFA)** sempre que possível, especialmente para acessos remotos como SSH.
-* **Realizar auditorias periódicas** para identificar informações sensíveis expostas em aplicações web e sistemas.
-* **Monitorar tentativas de acesso e atividades suspeitas**, permitindo a detecção precoce de possíveis comprometimentos.
-* **Manter sistemas e serviços atualizados**, reduzindo a superfície de ataque e corrigindo vulnerabilidades conhecidas.
+* **Do not store credentials in publicly accessible files**, web pages, or directories without proper protection.
+* **Restrict access to services exposed on non-standard ports**, ensuring that only authorized users can access them.
+* **Apply the principle of least privilege**, limiting user access to only the resources necessary for their roles.
+* **Use strong and unique passwords**, avoiding credential reuse across different services.
+* **Implement Multi-Factor Authentication (MFA)** whenever possible, especially for remote access services such as SSH.
+* **Perform regular security audits** to identify sensitive information exposed in web applications and systems.
+* **Monitor access attempts and suspicious activity**, enabling early detection of potential compromises.
+* **Keep systems and services up to date**, reducing the attack surface and mitigating known vulnerabilities.
 
-A exposição de credenciais foi o principal vetor de comprometimento desta máquina. A adoção dessas práticas reduziria significativamente o risco de acesso não autorizado ao ambiente.
-
+The exposure of credentials was the primary attack vector in this machine. Adopting these security practices would significantly reduce the risk of unauthorized access to the environment.
